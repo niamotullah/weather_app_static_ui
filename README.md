@@ -1,16 +1,16 @@
-# weather_app_static_ui
+#  Weather App (Static UI)
 
-A new Flutter project.
+## Features
 
-## Getting Started
+- [x] Fetch data from a free API (OpenWeatherMap)
+- [ ] Display:
+  - [x] location,
+  - [x] temperature,
+  - [ ] weather icon
+- [ ] Show error handling (no internet, invalid location)
 
-This project is a starting point for a Flutter application.
+## Learning Goals
 
-A few resources to get you started if this is your first Flutter project:
+- [x] Network calls
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [x] JSON parsing
