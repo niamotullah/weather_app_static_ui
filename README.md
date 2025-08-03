@@ -20,3 +20,4 @@
 
 - [x] Network calls
 - [x] JSON parsing
+- [x] Dio
