@@ -1,26 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'weather.g.dart';
-
-class CurrentWeather {
-  WeatherResponse? _data;
-  CurrentWeather._(this._data);
-  factory CurrentWeather.fromWeatherResponse(WeatherResponse response) =>
-      CurrentWeather._(response);
-
-  String get weatherDescription =>
-      _data?.weather.first.description ?? 'Unknown';
-  String get name => _data?.name ?? 'Unknown';
-  double get temperature => _data?.main?.temp ?? 0; // Temperature in Kelvin
-  double get feelsLike => _data?.main?.feelsLike ?? 0.0;
-  double get tempMin => _data?.main?.tempMin ?? 0.0;
-  double get tempMax => _data?.main?.tempMax ?? 0.0;
-  int get humidity => _data?.main?.humidity ?? 0;
-  double get windSpeed => _data?.wind?.speed ?? 0.0;
-}
+part 'weather_response.g.dart';
 
 @JsonSerializable()
 class Clouds {
+  /// Cloudiness, %
   final int all;
 
   Clouds({required this.all});
@@ -30,9 +14,13 @@ class Clouds {
   Map<String, dynamic> toJson() => _$CloudsToJson(this);
 }
 
+/// Longitude and Latitude of the location
 @JsonSerializable()
 class Coord {
+  ///[coord.lon] Longitude of the location
   final double lon;
+
+  /// [coord.lat] Latitude of the location
   final double lat;
 
   Coord({required this.lon, required this.lat});
@@ -44,27 +32,27 @@ class Coord {
 
 @JsonSerializable()
 class Main {
-  final double temp;
+  final double? temp;
   @JsonKey(name: 'feels_like')
-  final double feelsLike;
+  final double? feelsLike;
   @JsonKey(name: 'temp_min')
-  final double tempMin;
+  final double? tempMin;
   @JsonKey(name: 'temp_max')
-  final double tempMax;
-  final int pressure;
-  final int humidity;
+  final double? tempMax;
+  final int? pressure;
+  final int? humidity;
   @JsonKey(name: 'sea_level')
   final int? seaLevel;
   @JsonKey(name: 'grnd_level')
   final int? grndLevel;
 
   Main({
-    required this.temp,
-    required this.feelsLike,
-    required this.tempMin,
-    required this.tempMax,
-    required this.pressure,
-    required this.humidity,
+    this.temp,
+    this.feelsLike,
+    this.tempMin,
+    this.tempMax,
+    this.pressure,
+    this.humidity,
     this.seaLevel,
     this.grndLevel,
   });
@@ -92,16 +80,23 @@ class Rain {
 class Sys {
   final int? type;
   final int? id;
-  final String? country;
-  final int sunrise;
-  final int sunset;
+  @JsonKey(name: 'country')
+  final String? countryCode;
+  final int? sunrise;
+  final int? sunset;
+
+  String? get country {
+    if (countryCode == null) return null;
+
+    return countryCode;
+  }
 
   Sys({
     this.type,
     this.id,
-    this.country,
-    required this.sunrise,
-    required this.sunset,
+    this.countryCode,
+    this.sunrise,
+    this.sunset,
   });
 
   factory Sys.fromJson(Map<String, dynamic> json) => _$SysFromJson(json);
@@ -110,52 +105,75 @@ class Sys {
 }
 
 @JsonSerializable()
-class _Weather {
+///[more info Weather condition codes](https://openweathermap.org/weather-conditions)
+class WeatherModel {
+  /// Weather condition id
   final int id;
+
+  /// Group of weather parameters (Rain, Snow, Clouds etc.)
   final String main;
+
+  /// Weather condition within the group. Please find more here. You can get the output in your language. Learn more
   final String description;
+
+  /// Weather icon id
   final String icon;
 
-  _Weather({
+  WeatherModel({
     required this.id,
     required this.main,
     required this.description,
     required this.icon,
   });
 
-  factory _Weather.fromJson(Map<String, dynamic> json) =>
-      _$WeatherFromJson(json);
+  factory WeatherModel.fromJson(Map<String, dynamic> json) =>
+      _$WeatherModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WeatherToJson(this);
+  Map<String, dynamic> toJson() => _$WeatherModelToJson(this);
 }
 
 @JsonSerializable()
 class WeatherResponse {
-  final Coord? coord;
-  final List<_Weather> weather;
+  final Coord coord;
+  final List<WeatherModel>? weather;
   final String? base;
+  @JsonKey(name: 'main')
   final Main? main;
+
+  /// Visibility in meters
+  ///
+  /// Max value is 10,000 meters
   final int? visibility;
   final Wind? wind;
   final Rain? rain;
   final Clouds? clouds;
-  final int dt;
+
+  /// Time of data calculation, unix, UTC
+  final int? dt;
   final Sys? sys;
-  final int timezone;
+
+  /// timezone Shift in seconds from UTC
+  final int? timezone;
+
+  /// City ID. Please note that built-in geocoder functionality has been deprecated.
+  ///
+  /// Learn more [here](https://openweathermap.org/current#builtin)
   final int id;
   final String name;
+
+  /// Internal parameter
   final int cod;
 
   WeatherResponse({
-    this.coord,
-    required this.weather,
-    this.base,
     this.main,
+    required this.coord,
+    this.weather,
+    this.base,
     this.visibility,
     this.wind,
     this.rain,
     this.clouds,
-    required this.dt,
+    this.dt,
     this.sys,
     required this.timezone,
     required this.id,

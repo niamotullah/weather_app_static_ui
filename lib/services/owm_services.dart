@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_app_static_ui/model/weather.dart';
+import 'package:weather_app_static_ui/services/weather_response.dart';
 
 final kClient = Dio(
   BaseOptions(
@@ -14,21 +14,16 @@ final kClient = Dio(
 class OpenWeatherMapServices {
   static late final Dio _owmClient;
   static OpenWeatherMapServices? _instance;
+  static OpenWeatherMapServices get instance =>
+      _instance ??= OpenWeatherMapServices._();
+
   OpenWeatherMapServices._() {
     _owmClient = kClient;
   }
 
-  static OpenWeatherMapServices initialize() {
-    return _instance ??= OpenWeatherMapServices._();
-  }
-
-  static OpenWeatherMapServices get instance =>
-      _instance ??= OpenWeatherMapServices._();
-
-  /// get [current] weather using latlon
+  /// get *current* weather using coordinates
   ///
   /// [Read more](https://openweathermap.org/current)
-  // TODO
   Future<WeatherResponse> currentWeatherFromCoord(Coord coord) async {
     final lon = coord.lon;
     final lat = coord.lat;
@@ -43,5 +38,9 @@ class OpenWeatherMapServices {
         );
 
     return WeatherResponse.fromJson(response);
+  }
+
+  static OpenWeatherMapServices initialize() {
+    return _instance ??= OpenWeatherMapServices._();
   }
 }

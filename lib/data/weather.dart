@@ -1,4 +1,4 @@
-import 'package:weather_app_static_ui/model/weather.dart';
+import 'package:weather_app_static_ui/services/weather_response.dart';
 
 final weatherLocationData = <WeatherLocationModel>[
   WeatherLocationModel(Coord(lat: 40.7128, lon: -74.0060)),

@@ -1,11 +1,16 @@
 {
     "cSpell.words": [
+        "Cupertino",
+        "dotenv",
+        "geocoder",
+        "grnd",
         "Narayanganj",
         "Openweathermap",
+        "Schyler",
         "নারায়ণগঞ্জ",
         "ನಾರಾಯಣಗಂಜ್"
     ],
     "cSpell.enabledSchemes": {
-        "file": false
+        "file": true
     }
 }

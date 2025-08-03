@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app_static_ui/data/weather.dart';
-import 'package:weather_app_static_ui/model/weather.dart';
-import 'package:weather_app_static_ui/utils/owm_services.dart';
+import 'package:weather_app_static_ui/model/current_weather.dart';
+import 'package:weather_app_static_ui/services/owm_services.dart';
 
 class CurrentWeatherProvider extends ChangeNotifier {
   List<CurrentWeather>? _currentWeatherDataList;
   CurrentWeatherProvider() {
-    _loadSaved();
+    init();
   }
-
-  void _loadSaved() async {
+  Future<List<CurrentWeather>> init() async {
     _currentWeatherDataList = await Future.wait(
       weatherLocationData.map(
         (wlmodel) async {
@@ -17,13 +16,12 @@ class CurrentWeatherProvider extends ChangeNotifier {
               .currentWeatherFromCoord(
                 wlmodel.coord,
               );
-          // Convert WeatherResponse to CurrentWeather as needed
+          // Convert WeatherResponse to Weather as needed
           return CurrentWeather.fromWeatherResponse(weatherResponse);
         },
       ),
     );
-
-    notifyListeners();
+    return items;
   }
 
   int get itemCount => _currentWeatherDataList?.length ?? 0;
@@ -36,5 +34,5 @@ class CurrentWeatherProvider extends ChangeNotifier {
     return _currentWeatherDataList?[index];
   }
 
-  List<CurrentWeather>? get currentWeatherList => _currentWeatherDataList;
+  List<CurrentWeather> get items => _currentWeatherDataList ?? [];
 }
